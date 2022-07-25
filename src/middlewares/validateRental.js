@@ -30,7 +30,7 @@ async function validateRental(req, res, next) {
         }
 
         const { rows: gameQuery } = await connection.query(`
-            SELECT * FROM customers
+            SELECT * FROM games
             WHERE id = $1
         `, [body.gameId]);
         if (gameQuery.length === 0) {
