@@ -24,11 +24,11 @@ export async function getGames(req, res) {
 
 export async function addGame(_req, res) {
     try {
-        const body = res.locals.body;
+        const {name, image, stockTotal, categoryId, pricePerDay } = res.locals.body;
         await connection.query(`
             INSERT INTO games (name, image, "stockTotal", "categoryId", "pricePerDay")
             VALUES ($1, $2, $3, $4, $5)
-        `, [body.name, body.image, body.stockTotal, body.categoryId, body.pricePerDay]);
+        `, [name, image, stockTotal, categoryId, pricePerDay]);
         return res.sendStatus(201);
 
     } catch (err) {
