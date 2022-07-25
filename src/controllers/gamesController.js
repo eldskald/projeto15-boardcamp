@@ -12,7 +12,7 @@ export async function getGames(req, res) {
 
         const { rows: games } = await connection.query(`
             SELECT * FROM games
-            WHERE name = $1
+            WHERE name LIKE CONCAT($1::text, '%')
         `, [queryString]);
         return res.status(200).send(games);
 
