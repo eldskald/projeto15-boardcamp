@@ -113,6 +113,29 @@ export async function returnRental(req, res) {
 }
 
 export async function deleteRental(req, res) {
-    return;
+    try {
+        const rentalId = req.params.id;
+        const { rows: rentalQuery } = await connection.query(`
+            SELECT * FROM rentals
+            WHERE id = $1
+        `, [rentalId]);
+        if (rentalQuery.length === 0) {
+            return res.sendStatus(404);
+        }
+
+        const rental = rentalQuery[0];
+        if (!rental.returnDate) {
+            return res.sendStatus(400);
+        }
+
+        await connection.query(`
+            DELETE FROM rentals WHERE id = $1
+        `, [rentalId]);
+        return res.sendStatus(200);
+ 
+    } catch (err) {
+        console.log(err);
+        return res.sendStatus(500);
+    }
 }
 
