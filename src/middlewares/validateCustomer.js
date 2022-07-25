@@ -24,14 +24,25 @@ async function validateCustomer(req, res, next) {
             return res.sendStatus(400);
         }
 
-        const { rows: cpfQuery } = await connection.query(`
-            SELECT * FROM customers
-            WHERE cpf = $1
-        `, [body.cpf]);
-        if (cpfQuery.length > 0) {
-            return res.sendStatus(409);
+        const customerId = req.params.id;
+        if (customerId) {
+            const { rows: cpfQuery } = await connection.query(`
+                SELECT * FROM customers
+                WHERE cpf = $1 AND id <> $2
+            `, [body.cpf, customerId]);
+            if (cpfQuery.length > 0) {
+                return res.sendStatus(409);
+            }
+        } else {
+            const { rows: cpfQuery } = await connection.query(`
+                SELECT * FROM customers
+                WHERE cpf = $1
+            `, [body.cpf]);
+            if (cpfQuery.length > 0) {
+                return res.sendStatus(409);
+            }
         }
-        
+                
         dayjs.extend(customParseFormat);
         if (!dayjs(body.birthday, 'YYYY-MM-DD', true).isValid()) {
             return res.sendStatus(400);

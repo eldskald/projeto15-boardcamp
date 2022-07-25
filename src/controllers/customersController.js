@@ -67,3 +67,21 @@ export async function addCustomer(_req, res) {
         return res.sendStatus(500);
     } 
 }
+
+export async function updateCustomer(req, res) {
+    try {
+        const customerId = req.params.id;
+        const { name, phone, cpf, birthday } = res.locals.body;
+        await connection.query(`
+            UPDATE customers
+            SET name = $1, phone = $2, cpf = $3, birthday = $4
+            WHERE id = $5
+        `, [name, phone, cpf, birthday, customerId]);
+        return res.sendStatus(200);
+
+    } catch (err) {
+        console.log(err);
+        return res.sendStatus(500);
+    }
+}
+
